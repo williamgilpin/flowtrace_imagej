@@ -1,5 +1,5 @@
 /*
-This macro allows time-resolved streamlines to be generated for a stack of images
+This macro allows time-resolved pathlines to be generated for a stack of images
 When Batch mode is disabled, this script will run a lot faster whenImageJ is in 
 the foreground of the GUI
 
@@ -25,14 +25,12 @@ clr_flag=false;
 
 diff_flag=false;
 
-iimax = nSlices - nmerge;
-
 stack_flag = false;
 
 // Have user specify all of the relevant parameters
 UseDialog = true;
 if (UseDialog) {
-    Dialog.create ("Streamline Tool");
+    Dialog.create ("flowtrace");
     Dialog.addNumber ("Number of frames to merge:", nmerge);
     Dialog.addNumber ("Frames to skip (1 if none):", stride_len);
 
@@ -93,9 +91,10 @@ if (clr_flag) {
     run("RGB Color");
 }
 
+iimax = nSlices - nmerge;
 // The main loop through the images
-for (ii=1; ii<(iimax-1); ii++) {
-    showProgress(ii, (iimax-1)); 
+for (ii=1; ii<iimax; ii++) {
+    showProgress(ii, iimax); 
 
     if (ii==1) {
         if (stack_flag) {
@@ -128,10 +127,7 @@ for (ii=1; ii<(iimax-1); ii++) {
 
 	if (med_flag) {
 		run("Z Project...", "projection=[Median]");
-		//rename("med_image");
-		//med_image=getTitle();
 		imageCalculator("Subtract stack", subname,"MED_"+subname);
-		//imageCalculator("Subtract stack",subname,med_image);
 		selectWindow("MED_"+subname);
     	close();
 	}
@@ -193,5 +189,6 @@ for (ii=1; ii<(iimax-1); ii++) {
 
     
 }
+
 setBatchMode(false);
 
